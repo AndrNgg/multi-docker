@@ -1,0 +1,22 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t teerminuz/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run teerminuz/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t teerminuz/multi-client ./client
+  - docker build -t teerminuz/multi-nginx ./nginx
+  - docker build -t teerminuz/multi-server ./server
+  - docker build -t teerminuz/multi-worker ./worker
+  #login in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push them to docker hub
+  - docker push teerminuz/multi-client
+  - docker push teerminuz/multi-nginx
+  - docker push teerminuz/multi-server
+  - docker push teerminuz/multi-worker
