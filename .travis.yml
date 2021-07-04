@@ -1,4 +1,6 @@
 sudo: required
+language: generic
+
 services:
   - docker
 
@@ -21,7 +23,7 @@ after_success:
   - docker push teerminuz/multi-server
   - docker push teerminuz/multi-worker
 
-DEPLOY:
+deploy:
   provider: elasticbeanstalk
   region: 'us-east-1'
   app: 'multi-docker'
